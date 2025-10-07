@@ -1,0 +1,66 @@
+import java.util.*;
+
+public class Main {
+    public static void optimalBST(double[] p, double[] q, int n) {
+        double[][] E = new double[n + 1][n + 1];
+        double[][] W = new double[n + 1][n + 1];
+        int[][] R = new int[n + 1][n + 1];
+
+        // Step 1: Initialization
+        for (int i = 0; i <= n; i++) {
+            E[i][i] = q[i];
+            W[i][i] = q[i];
+            R[i][i] = 0;
+        }
+
+        // Step 2: Compute optimal costs
+        for (int d = 1; d <= n; d++) {
+            for (int i = 0; i <= n - d; i++) {
+                int j = i + d;
+                E[i][j] = Double.MAX_VALUE;
+                W[i][j] = W[i][j - 1] + p[j - 1] + q[j];
+
+                for (int k = i + 1; k <= j; k++) {
+                    double cost = E[i][k - 1] + E[k][j] + W[i][j];
+                    if (cost < E[i][j]) {
+                        E[i][j] = cost;
+                        R[i][j] = k;
+                    }
+                }
+            }
+        }
+
+        // Step 3: Print results
+        System.out.println("E Matrix:");
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= n; j++) {
+                System.out.printf("%.2f ", E[i][j]);
+            }
+            System.out.println();
+        }
+
+        System.out.println("\nW Matrix:");
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= n; j++) {
+                System.out.printf("%.2f ", W[i][j]);
+            }
+            System.out.println();
+        }
+
+        System.out.println("\nR Matrix:");
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= n; j++) {
+                System.out.print(R[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void main(String[] args) {
+        int n = 3;
+        double[] p = {0.15, 0.10, 0.05};
+        double[] q = {0.05, 0.10, 0.05, 0.05};
+
+        optimalBST(p, q, n);
+    }
+}
